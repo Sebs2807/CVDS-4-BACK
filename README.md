@@ -4,3 +4,9 @@ Adicionalmente usamos herramientas como Mock, InjectMocks y BeforeEach para faci
 
 ![alt text](image-1.png)
 ![alt text](image.png)
+
+Creamos los directorios necesarios para el correcto funcionamiento del proyecto, además de las implementaciones de sonar y jacoco en la carpeta target mediante los plugin puestos en el pom
+![alt text](image-2.png)
+
+Sonar y jacoco
+![alt text](image-3.png)
