@@ -10,9 +10,9 @@ name: Build and Test Java Spring Boot Application
  
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
  
 jobs:
   build:
@@ -35,5 +35,6 @@ jobs:
       uses: actions/upload-artifact@v3
       if: success() || failure()
       with:
-        name: SpringBoot Report
-        path: target/site/jacoco/
+          name: SpringBoot Report               # Name of the folder
+          path: target/site/serenity/           # Path to test results
+
