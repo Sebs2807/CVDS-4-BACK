@@ -1,0 +1,22 @@
+name: CI Pipeline  # Nombre del workflow
+
+on:  # Eventos que disparan el workflow
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:  # Primer job
+    runs-on: ubuntu-latest  # Entorno donde se ejecutará el job
+    steps:
+      - name: Checkout repository  # Un paso llamado 'Checkout repository'
+        uses: actions/checkout@v3  # Acción que realiza el checkout del repositorio
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'  # Versión de Java
+
+      - name: Build with Maven
+        run: mvn clean compile  # Comando para compilar el proyecto con Maven
