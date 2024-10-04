@@ -1,12 +1,17 @@
 package edu.eci.cvds.Tasks.service;
 
 import edu.eci.cvds.Tasks.model.Task;
+import edu.eci.cvds.Tasks.model.Difficulty;
 import edu.eci.cvds.Tasks.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.time.Duration;
+import com.github.javafaker.Faker;
+
 
 @Service
 public class TaskService {
@@ -14,6 +19,29 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
+    private final Faker faker = new Faker();
+    private final Random random = new Random();
+
+    /**
+     * Genera una lista de tareas autogeneradas y las almacena en el repositorio
+     *
+     */
+    public void taskGenerator(){
+        int numTareas = random.nextInt(901)+100;
+        for (int i = 0; i < numTareas; i++) {
+            Task task = new Task();
+            task.setNombreTarea(faker.job().title()); // Genera un nombre aleatorio para la tarea
+            task.setFinalizada(random.nextBoolean()); // Estado de finalizacion aleatorio entre true y false
+            task.setDescTarea(faker.lorem().sentence()); // Genera una cadena de string aleatoria
+            task.setPrioridadTarea(random.nextInt(5) + 1); // Genera un numero aleatorio entre 1 y 5
+            task.setDificultadTarea(faker.options().option(Difficulty.class)); // Selecciona una de las opciones del Enum
+            task.setTiempoTarea(Duration.ofHours(random.nextInt(8) + 1)); // Genera una duracion aleatoria entre 1 y 8 horas
+
+            // Guardar la tarea generada en la base de datos
+            taskRepository.save(task);
+        }
+    }
+    
     /**
      * Obtener todas las tareas almacenadas en el repositorio.
      *

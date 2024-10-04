@@ -74,7 +74,3 @@ public class Task {
         this.descTarea = descTarea;
     }
 }
-
-enum Difficulty{
-    ALTO,MEDIO,BAJO
-}
