@@ -137,4 +137,70 @@ public class TaskApplicationTest {
         assertEquals(expectedDuration, task1.getTiempoTarea());
     }
 
+    @Test
+    public void givenOneTaskWhenQueriedByIdThenReturnTaskSuccessfully() {
+        // Dado que tengo 1 tarea registrada
+        when(taskRepository.findById("1")).thenReturn(Optional.of(task1));
+
+        // Cuándo la consulto a nivel de servicio
+        Optional<Task> result = taskService.getTaskById("1");
+
+        // Entonces la consulta será exitosa validando el campo id
+        assertTrue(result.isPresent());
+        assertEquals("1", result.get().getIdTarea());
+    }
+
+    @Test
+    public void givenNoTasksWhenQueriedByIdThenReturnNoResult() {
+        // Dado que no hay ninguna tarea registrada
+        when(taskRepository.findById("1")).thenReturn(Optional.empty());
+
+        // Cuándo la consulto a nivel de servicio
+        Optional<Task> result = taskService.getTaskById("1");
+
+        // Entonces la consulta no retornará ningún resultado
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    public void givenNoTasksWhenTaskIsCreatedThenCreationIsSuccessful() {
+        // Dado que no hay ninguna tarea registrada
+        when(taskRepository.save(task1)).thenReturn(task1);
+
+        // Cuándo lo creo a nivel de servicio
+        Task createdTask = taskService.createTask(task1);
+
+        // Entonces la creación será exitosa
+        assertNotNull(createdTask);
+        assertEquals("1", createdTask.getIdTarea());
+    }
+
+    @Test
+    public void givenOneTaskWhenDeletedThenDeletionIsSuccessful() {
+        // Dado que tengo 1 tarea registrada
+        doNothing().when(taskRepository).deleteById("1");
+
+        // Cuándo la elimino a nivel de servicio
+        taskService.deleteTask("1");
+
+        // Entonces la eliminación será exitosa
+        verify(taskRepository, times(1)).deleteById("1");
+    }
+
+    @Test
+    public void givenOneTaskWhenDeletedAndQueriedThenNoResultIsReturned() {
+        // Dado que tengo 1 tarea registrada
+        doNothing().when(taskRepository).deleteById("1");
+        when(taskRepository.findById("1")).thenReturn(Optional.empty());
+
+        // Cuándo la elimino
+        taskService.deleteTask("1");
+
+        // Y consulto a nivel de servicio
+        Optional<Task> result = taskService.getTaskById("1");
+
+        // Entonces el resultado de la consulta no retornará ningún resultado
+        assertFalse(result.isPresent());
+    }
+
 }
