@@ -1,5 +1,6 @@
 package edu.eci.cvds.Tasks.model;
 
-public enum Difficulty {
+
+public enum Difficulty{
     ALTO,MEDIO,BAJO
 }
