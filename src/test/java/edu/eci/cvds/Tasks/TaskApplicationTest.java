@@ -1,6 +1,7 @@
 package edu.eci.cvds.Tasks;
 
 import edu.eci.cvds.Tasks.model.Task;
+import edu.eci.cvds.Tasks.model.Difficulty;
 import edu.eci.cvds.Tasks.repository.TaskRepository;
 import edu.eci.cvds.Tasks.service.TaskService;
 
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,19 +34,26 @@ public class TaskApplicationTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-
+    
         task1 = new Task();
         task1.setIdTarea("1");
         task1.setNombreTarea("Tarea 1");
         task1.setFinalizada(false);
         task1.setDescTarea("Descripción de la tarea 1");
-
+        task1.setPrioridadTarea(2);
+        task1.setDificultadTarea(Difficulty.ALTO);
+        task1.setTiempoTarea(Duration.ofHours(2));
+    
         task2 = new Task();
         task2.setIdTarea("2");
         task2.setNombreTarea("Tarea 2");
         task2.setFinalizada(true);
         task2.setDescTarea("Descripción de la tarea 2");
+        task2.setPrioridadTarea(1);
+        task2.setDificultadTarea(Difficulty.BAJO);
+        task2.setTiempoTarea(Duration.ofHours(1));
     }
+    
 
     @Test
     public void shouldGetAllTasks() {
@@ -111,6 +120,25 @@ public class TaskApplicationTest {
     }
 
     @Test
+    public void shouldSetAndReturnPrioridadTarea() {
+        task1.setPrioridadTarea(3);
+        assertEquals(3, task1.getPrioridadTarea());
+    }
+
+    @Test
+    public void shouldSetAndReturnDificultadTarea() {
+        task1.setDificultadTarea(Difficulty.MEDIO);
+        assertEquals(Difficulty.MEDIO, task1.getDificultadTarea());
+    }
+
+    @Test
+    public void shouldSetAndReturnTiempoTarea() {
+        Duration expectedDuration = Duration.ofHours(5);
+        task1.setTiempoTarea(expectedDuration);
+        assertEquals(expectedDuration, task1.getTiempoTarea());
+    }
+
+
     public void testTaskGenerator() {
         taskService.taskGenerator();
         ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
