@@ -80,3 +80,10 @@ Implementación de una clase para permitir realizar solicitudes HTTP desde un pu
 - Solicitud DELETE para eliminar una tarea dado su `idTarea`:
   http://localhost:8080/tasks/{idTarea}
   ![DELETE eliminar tarea](images/img_10.png)
+
+## 10. Herramienta de gráficas
+Para los histogramas pedidos usamos la herramienta de chart.js, que permite la creación de gráficos interactivos. 
+
+Esta herramienta es bastante intuitiva y facil de usar, también tiene gráficos atractivos para el usuario además de permitirles interactuar mediante herramientas como el "hover" usado en css y son adaptables a las diferentes pantallas
+
+Las partes malas de usar chart.js es que tiene personalizacion limitada y no es tan fácil de escalar para datos muy complejos y gráficos 3d, por lo tanto para graficación simple es una buena herramienta por su facilidad de uso
