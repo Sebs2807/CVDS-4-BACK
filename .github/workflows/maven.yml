@@ -49,8 +49,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven
-        run: mvn clean package
-        working-directory: my-app-path
+        run: mvn -B package --file pom.xml
 
       - name: Azure WebApp
         uses: Azure/webapps-deploy@v2
