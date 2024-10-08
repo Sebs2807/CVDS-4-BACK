@@ -48,9 +48,10 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+
       - name: Azure WebApp
         uses: Azure/webapps-deploy@v2
         with:
           app-name: CVDSLab5
           publish-profile: ${{ secrets.SECRET_BACK_TASKS }}
-          package: ./target/*.jar
+          package: target/Tasks-0.0.1-SNAPSHOT.jar
