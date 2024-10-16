@@ -17,14 +17,14 @@ public class AuthService {
     @Autowired
     private TokenRepository tokenRepository;
 
-    public Token logIn(String userName, String passwd){
-        Optional<User> optionalUser = userRepository.findByUsername(userName);
+    public Token logIn(User user){
+        Optional<User> optionalUser = userRepository.findByuserName(user.getUserName());
 
         if (optionalUser.isPresent()){
-            User user = optionalUser.get();
-            if(user.getPasswd().equals(passwd)){
+            User userDB = optionalUser.get();
+            if(userDB.getPasswd().equals(user.getPasswd())){
                 Token token = new Token();
-                token.setIdUser(user.getIdUser());
+                token.setIdUser(userDB.getIdUser());
                 return tokenRepository.save(token);
             } else {
                 return null;
@@ -34,11 +34,10 @@ public class AuthService {
         }
     }
 
-    public User createUser(String userName, String passwd){
-        Optional<User> optionalUser = userRepository.findByUsername(userName);
+    public User createUser(User user){
+        Optional<User> optionalUser = userRepository.findByuserName(user.getUserName());
 
         if (optionalUser.isEmpty()){
-            User user = new User(userName, passwd);
             return userRepository.save(user);
         } else {
             return null;

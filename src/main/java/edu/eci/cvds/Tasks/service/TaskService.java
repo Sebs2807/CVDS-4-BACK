@@ -35,7 +35,7 @@ public class TaskService {
             task.setDescTarea(faker.lorem().sentence()); // Genera una cadena de string aleatoria
             task.setPrioridadTarea(random.nextInt(5) + 1); // Genera un numero aleatorio entre 1 y 5
             task.setDificultadTarea(faker.options().option(Difficulty.class)); // Selecciona una de las opciones del Enum
-            task.setTiempoTarea(Duration.ofHours(random.nextInt(8) + 1)); // Genera una duracion aleatoria entre 1 y 8 horas
+            task.setTiempoTarea(random.nextInt(8) + 1); // Genera una duracion aleatoria entre 1 y 8 horas
 
             // Guardar la tarea generada en la base de datos
             taskRepository.save(task);
@@ -46,8 +46,8 @@ public class TaskService {
      *
      * @return Lista de objetos Task que contiene todas las tareas disponibles.
      */
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public List<Task> getAllTasks(String idUser) {
+        return taskRepository.findByidUser(idUser);
     }
 
     /**

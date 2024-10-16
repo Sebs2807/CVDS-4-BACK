@@ -3,7 +3,7 @@ package edu.eci.cvds.Tasks.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "tokens")
+@Document(collection = "users")
 public class User {
     @Id
     private String idUser;
@@ -11,7 +11,7 @@ public class User {
     private String userName;
     private String passwd;
 
-    public User(String userName, String passwd){
+    public User(String userName, String passwd) {
         this.userName = userName;
         this.passwd = passwd;
     }
@@ -32,11 +32,4 @@ public class User {
         this.idUser = idUser;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
-    }
 }

@@ -1,6 +1,7 @@
 package edu.eci.cvds.Tasks.controller;
 
 import edu.eci.cvds.Tasks.model.Task;
+import edu.eci.cvds.Tasks.model.Token;
 import edu.eci.cvds.Tasks.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,9 @@ public class TaskController {
      *
      * @return Lista de objetos Task, que contiene todas las tareas.
      */
-    @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    @GetMapping("/GAT/{idUser}")
+    public List<Task> getAllTasks(@PathVariable String idUser) {
+        return taskService.getAllTasks(idUser);
     }
 
     /**
@@ -66,10 +67,5 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable String id) {
         taskService.deleteTask(id);
-    }
-
-    @PostMapping
-    public Task createAleatoryTask(@RequestBody Task task) {
-        return taskService.createTask(task);
     }
 }

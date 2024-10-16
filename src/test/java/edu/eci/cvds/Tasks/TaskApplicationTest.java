@@ -48,8 +48,12 @@ public class TaskApplicationTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
+        user = new User("SantiagoDiazR", "a4nt14g0");
+        user.setIdUser("1");
+
         token = new Token();
-        token.setIdUser();
+        token.setIdToken("1");
+        token.setIdUser("1");
     
         task1 = new Task();
         task1.setIdTarea("1");
@@ -58,7 +62,8 @@ public class TaskApplicationTest {
         task1.setDescTarea("Descripción de la tarea 1");
         task1.setPrioridadTarea(2);
         task1.setDificultadTarea(Difficulty.ALTO);
-        task1.setTiempoTarea(Duration.ofHours(2));
+        task1.setTiempoTarea(2);
+        task1.setIdUser("1");
     
         task2 = new Task();
         task2.setIdTarea("2");
@@ -67,9 +72,8 @@ public class TaskApplicationTest {
         task2.setDescTarea("Descripción de la tarea 2");
         task2.setPrioridadTarea(1);
         task2.setDificultadTarea(Difficulty.BAJO);
-        task2.setTiempoTarea(Duration.ofHours(1));
-
-
+        task2.setTiempoTarea(1);
+        task2.setIdUser("1");
     }
     
 
@@ -77,7 +81,7 @@ public class TaskApplicationTest {
     public void shouldGetAllTasks() {
         when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2));
 
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.getAllTasks("1");
         assertEquals(2, tasks.size());
         assertEquals("Tarea 1", tasks.get(0).getNombreTarea());
     }
@@ -151,7 +155,7 @@ public class TaskApplicationTest {
 
     @Test
     public void shouldSetAndReturnTiempoTarea() {
-        Duration expectedDuration = Duration.ofHours(5);
+        Integer expectedDuration = 5;
         task1.setTiempoTarea(expectedDuration);
         assertEquals(expectedDuration, task1.getTiempoTarea());
     }

@@ -17,6 +17,10 @@ public class Token {
         return idToken;
     }
 
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
+    }
+
     public void setIdUser(String idUser) {
         this.idUser = idUser;
     }
