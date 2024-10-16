@@ -2,7 +2,12 @@ package edu.eci.cvds.Tasks;
 
 import edu.eci.cvds.Tasks.model.Task;
 import edu.eci.cvds.Tasks.model.Difficulty;
+import edu.eci.cvds.Tasks.model.Token;
+import edu.eci.cvds.Tasks.model.User;
 import edu.eci.cvds.Tasks.repository.TaskRepository;
+import edu.eci.cvds.Tasks.repository.TokenRepository;
+import edu.eci.cvds.Tasks.repository.UserRepository;
+import edu.eci.cvds.Tasks.service.AuthService;
 import edu.eci.cvds.Tasks.service.TaskService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,16 +29,27 @@ public class TaskApplicationTest {
 
     @Mock
     private TaskRepository taskRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private TokenRepository tokenRepository;
 
     @InjectMocks
     private TaskService taskService;
+    @InjectMocks
+    private AuthService authService;
 
     private Task task1;
     private Task task2;
+    private User user;
+    private Token token;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        token = new Token();
+        token.setIdUser();
     
         task1 = new Task();
         task1.setIdTarea("1");
@@ -52,6 +68,8 @@ public class TaskApplicationTest {
         task2.setPrioridadTarea(1);
         task2.setDificultadTarea(Difficulty.BAJO);
         task2.setTiempoTarea(Duration.ofHours(1));
+
+
     }
     
 

@@ -67,4 +67,9 @@ public class TaskController {
     public void deleteTask(@PathVariable String id) {
         taskService.deleteTask(id);
     }
+
+    @PostMapping
+    public Task createAleatoryTask(@RequestBody Task task) {
+        return taskService.createTask(task);
+    }
 }

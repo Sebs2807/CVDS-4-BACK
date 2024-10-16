@@ -17,6 +17,7 @@ public class Task {
     private Integer prioridadTarea;
     private Difficulty dificultadTarea;
     private Duration tiempoTarea;
+    private String idUser;
 
     public Integer getPrioridadTarea() {
         return prioridadTarea;
@@ -72,6 +73,14 @@ public class Task {
 
     public void setDescTarea(String descTarea) {
         this.descTarea = descTarea;
+    }
+
+    public String getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
 }
 
