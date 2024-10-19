@@ -12,9 +12,9 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-
-    @GetMapping
-    public Token authentication(@RequestBody User user) {
+    @GetMapping("/{userName}/{passwd}")
+    public Token authentication(@PathVariable String userName, @PathVariable String passwd) {
+        User user = new User(userName, passwd);
         return authService.logIn(user);
     }
 
@@ -24,7 +24,7 @@ public class AuthController {
     }
 
     @DeleteMapping
-    public void deleteSession(@RequestBody Token token){
+    public void deleteSession(@RequestBody Token token) {
         authService.logOut(token);
     }
 
