@@ -1,33 +1,44 @@
 package edu.eci.cvds.Tasks.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import edu.eci.cvds.Tasks.model.User;
 import edu.eci.cvds.Tasks.repository.UserRepository;
 
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepository;  // Repositorio que maneja los usuarios en MongoDB
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;  // Inyectamos el PasswordEncoder
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<edu.eci.cvds.Tasks.model.User> user = userRepository.findByuserName(username);
-        if (!(user.isPresent())) {
-            throw new UsernameNotFoundException("User not found");
-        }
+        // Buscamos el usuario en la base de datos por su username
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        return User.builder()
-                .username(user.get().getUserName())
-                .password(user.get().getPasswd())
-                .roles(user.get().getRoles().toArray(new String[0]))
-                .build();
+        // Convertimos el usuario encontrado en un objeto UserDetails
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),  // La contraseña ya está cifrada en la base de datos
+                user.getAuthorities());
     }
+
+    public void saveUser(User user) {
+        // Ciframos la contraseña antes de guardar el usuario
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Guardamos el usuario en la base de datos
+        userRepository.save(user);
+    }
+    
 }
 

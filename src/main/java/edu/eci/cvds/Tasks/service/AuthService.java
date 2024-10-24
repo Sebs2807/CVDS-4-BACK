@@ -18,14 +18,8 @@ public class AuthService {
     @Autowired
     private TokenRepository tokenRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
     public Token logIn(User user){
-        Optional<User> optionalUser = userRepository.findByuserName(user.getUserName());
-
-        user.setPasswd(passwordEncoder.encode(user.getPasswd()));
-        userRepository.save(user);
+        Optional<User> optionalUser = userRepository.findByUserName(user.getUsername());
         
         if (optionalUser.isPresent()){
             User userDB = optionalUser.get();
@@ -42,7 +36,7 @@ public class AuthService {
     }
 
     public User createUser(User user){
-        Optional<User> optionalUser = userRepository.findByuserName(user.getUserName());
+        Optional<User> optionalUser = userRepository.findByUserName(user.getUsername());
 
         if (optionalUser.isEmpty()){
             return userRepository.save(user);
