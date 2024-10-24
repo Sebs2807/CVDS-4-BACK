@@ -5,6 +5,7 @@ import edu.eci.cvds.Tasks.model.User;
 import edu.eci.cvds.Tasks.repository.TokenRepository;
 import edu.eci.cvds.Tasks.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,9 +18,15 @@ public class AuthService {
     @Autowired
     private TokenRepository tokenRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     public Token logIn(User user){
         Optional<User> optionalUser = userRepository.findByuserName(user.getUserName());
 
+        user.setPasswd(passwordEncoder.encode(user.getPasswd()));
+        userRepository.save(user);
+        
         if (optionalUser.isPresent()){
             User userDB = optionalUser.get();
             if(userDB.getPasswd().equals(user.getPasswd())){
