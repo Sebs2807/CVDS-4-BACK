@@ -18,8 +18,10 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -46,7 +48,6 @@ public class TaskApplicationTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-
         user = new User("SantiagoDiazR", "a4nt14g0");
         user.setIdUser("1");
 

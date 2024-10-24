@@ -21,22 +21,24 @@ public class MongoUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Buscamos el usuario en la base de datos por su username
+        // Buscamos el usuario en la base de datos por su userName
         User user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-
+    
         // Convertimos el usuario encontrado en un objeto UserDetails
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
-                user.getPassword(),  // La contraseña ya está cifrada en la base de datos
-                user.getAuthorities());
+                user.getPasswd(),
+                user.getAuthorities()
+        );
     }
+    
 
     public void saveUser(User user) {
         // Ciframos la contraseña antes de guardar el usuario
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPasswd()));
 
-        // Guardamos el usuario en la base de datos
+        // Guardamos el usuario en la base de datos 
         userRepository.save(user);
     }
     

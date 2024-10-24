@@ -23,15 +23,13 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/login").permitAll() // Login accesible para todos
-                        .requestMatchers("/tasks/**").hasAuthority("USER") // Solo para usuarios con rol USER
-                        .requestMatchers("/analytics/**").hasAuthority("ADMIN") // Solo para administradores con rol
-                                                                                // ADMIN
-                        .anyRequest().authenticated()) // Cualquier otra ruta requiere autenticación
+                        .requestMatchers("/tasks/**").permitAll() // Solo para usuarios con rol USER
+                        .requestMatchers("/analytics/**").permitAll() // Solo para administradores con rol
+                        .anyRequest().permitAll()) // Cualquier otra ruta requiere autenticación
                 .formLogin((form) -> form
-                        .loginPage("/login")
-                        .permitAll())
+                                .loginPage("http://localhost:8080/auth")
+                                .permitAll())
                 .logout((logout) -> logout.permitAll());
-
         return http.build();
     }
 

@@ -3,6 +3,9 @@ package edu.eci.cvds.Tasks.controller;
 import edu.eci.cvds.Tasks.model.Token;
 import edu.eci.cvds.Tasks.model.User;
 import edu.eci.cvds.Tasks.service.AuthService;
+
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +15,9 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/{userName}/{passwd}")
-    public Token authentication(@PathVariable String userName, @PathVariable String passwd) {
-        User user = new User(userName, passwd);
+    @GetMapping("/{userName}/{password}")
+    public Token authentication(@PathVariable String userName, @PathVariable String password, @PathVariable Set<String> roles) {
+        User user = new User(userName, password);
         return authService.logIn(user);
     }
 
