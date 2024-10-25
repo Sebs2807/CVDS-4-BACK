@@ -16,7 +16,7 @@ public class AuthController {
     private AuthService authService;
 
     @GetMapping("/{userName}/{password}")
-    public Token authentication(@PathVariable String userName, @PathVariable String password, @PathVariable Set<String> roles) {
+    public Token authentication(@PathVariable String userName, @PathVariable String password) {
         User user = new User(userName, password);
         return authService.logIn(user);
     }

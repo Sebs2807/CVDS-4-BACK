@@ -11,7 +11,7 @@ import edu.eci.cvds.Tasks.model.User;
 import edu.eci.cvds.Tasks.repository.UserRepository;
 
 @Service
-public class MongoUserDetailsService implements UserDetailsService {
+public class MongoUserDetailsService{// implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;  // Repositorio que maneja los usuarios en MongoDB
@@ -19,19 +19,19 @@ public class MongoUserDetailsService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;  // Inyectamos el PasswordEncoder
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Buscamos el usuario en la base de datos por su userName
-        User user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    // @Override
+    // public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    //     // Buscamos el usuario en la base de datos por su userName
+    //     User user = userRepository.findByUserName(username)
+    //             .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     
-        // Convertimos el usuario encontrado en un objeto UserDetails
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPasswd(),
-                user.getAuthorities()
-        );
-    }
+    //     // Convertimos el usuario encontrado en un objeto UserDetails
+    //     return new org.springframework.security.core.userdetails.User(
+    //             user.getUsername(),
+    //             user.getPasswd()
+    //             // user.getAuthorities()
+    //     );
+    // }
     
 
     public void saveUser(User user) {

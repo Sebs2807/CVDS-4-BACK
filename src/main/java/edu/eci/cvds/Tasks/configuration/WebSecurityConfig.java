@@ -33,10 +33,10 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new MongoUserDetailsService(); // Implementación personalizada para MongoDB
-    }
+    // @Bean
+    // public UserDetailsService userDetailsService() {
+    //     return new MongoUserDetailsService(); // Implementación personalizada para MongoDB
+    // }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

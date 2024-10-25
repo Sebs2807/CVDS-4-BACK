@@ -18,10 +18,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -79,11 +77,11 @@ public class TaskApplicationTest {
 
     @Test
     public void shouldGetAllTasks() {
-        when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2));
+        when(taskRepository.findByidUser("1")).thenReturn(Arrays.asList(task1, task2));
 
         List<Task> tasks = taskService.getAllTasks("1");
-        assertEquals(2, tasks.size());
         assertEquals("Tarea 1", tasks.get(0).getNombreTarea());
+        assertEquals(2, tasks.size());
     }
 
     @Test

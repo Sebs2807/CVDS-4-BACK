@@ -11,25 +11,25 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Document(collection = "users")
-public class User implements UserDetails{
+public class User {
     @Id
     private String idUser;
     private String userName;
     private String passwd;
     private Set<String> roles;
     
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
-    }
+    // @Override
+    // public Collection<? extends GrantedAuthority> getAuthorities() {
+    //     return roles.stream()
+    //                 .map(SimpleGrantedAuthority::new)
+    //                 .collect(Collectors.toList());
+    // }
     
-    @Override
-    public String getPassword(){
-        String str = getPasswd();
-        return str;
-    }
+    // @Override
+    // public String getPassword(){
+    //     String str = getPasswd();
+    //     return str;
+    // }
 
     public String getPasswd() {
         return passwd;
