@@ -4,9 +4,8 @@ import edu.eci.cvds.Tasks.model.Token;
 import edu.eci.cvds.Tasks.model.User;
 import edu.eci.cvds.Tasks.service.AuthService;
 
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,4 +30,9 @@ public class AuthController {
         authService.logOut(token);
     }
 
+
+    @PutMapping("/addRole")
+    public User addRoleToUser(@RequestParam String userId, @RequestParam String role) {
+        return authService.addRoleToUser(userId, role);
+    }
 }
