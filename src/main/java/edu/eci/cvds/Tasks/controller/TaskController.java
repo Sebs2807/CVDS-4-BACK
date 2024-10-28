@@ -48,6 +48,14 @@ public class TaskController {
     }
 
     /**
+     * Crea entre 100 y 100 tareas aleatorias.
+     */
+    @PostMapping("/generateRandom")
+    public void generateRandomTasks() {
+        taskService.taskGenerator();
+    }
+
+    /**
      * Actualizar una tarea existente.
      *
      * @param id El identificador único de la tarea a actualizar.
