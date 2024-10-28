@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Random;
 import com.github.javafaker.Faker;
 
-
 @Service
 public class TaskService {
 
@@ -24,22 +23,25 @@ public class TaskService {
     /**
      * Genera una lista de tareas autogeneradas y las almacena en el repositorio
      *
+     * @param numTareas El número de tareas a generar.
      */
-    public void taskGenerator(){
-        int numTareas = random.nextInt(901)+100;
+    public void taskGenerator(int numTareas) {
         for (int i = 0; i < numTareas; i++) {
             Task task = new Task();
             task.setNombreTarea(faker.job().title()); // Genera un nombre aleatorio para la tarea
             task.setFinalizada(random.nextBoolean()); // Estado de finalizacion aleatorio entre true y false
             task.setDescTarea(faker.lorem().sentence()); // Genera una cadena de string aleatoria
             task.setPrioridadTarea(random.nextInt(5) + 1); // Genera un numero aleatorio entre 1 y 5
-            task.setDificultadTarea(faker.options().option(Difficulty.class)); // Selecciona una de las opciones del Enum
+            task.setDificultadTarea(faker.options().option(Difficulty.class)); // Selecciona una de las opciones del
+                                                                               // Enum
             task.setTiempoTarea(random.nextInt(8) + 1); // Genera una duracion aleatoria entre 1 y 8 horas
+            task.setIdUser(null); // Establece idUser como null para tareas de prueba
 
             // Guardar la tarea generada en la base de datos
             taskRepository.save(task);
         }
     }
+
     /**
      * Obtener todas las tareas almacenadas en el repositorio.
      *
@@ -50,10 +52,20 @@ public class TaskService {
     }
 
     /**
+     * Obtener todas las tareas almacenadas en el repositorio.
+     *
+     * @return Lista de objetos Task que contiene todas las tareas disponibles.
+     */
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
+    }
+
+    /**
      * Obtener una tarea específica por su ID.
      *
      * @param id El identificador único de la tarea.
-     * @return Un objeto Optional<Task> que contiene la tarea si es encontrada, o vacío si no existe.
+     * @return Un objeto Optional<Task> que contiene la tarea si es encontrada, o
+     *         vacío si no existe.
      */
     public Optional<Task> getTaskById(String id) {
         return taskRepository.findById(id);
@@ -72,7 +84,7 @@ public class TaskService {
     /**
      * Actualizar una tarea existente con nuevos valores.
      *
-     * @param id El identificador único de la tarea a actualizar.
+     * @param id          El identificador único de la tarea a actualizar.
      * @param updatedTask El objeto Task con los valores actualizados.
      * @return El objeto Task actualizado y almacenado en el repositorio.
      */

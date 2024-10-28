@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,6 @@ public class TaskApplicationTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-
         user = new User("SantiagoDiazR", "a4nt14g0");
         user.setIdUser("1");
 
@@ -78,11 +78,11 @@ public class TaskApplicationTest {
 
     @Test
     public void shouldGetAllTasks() {
-        when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2));
+        when(taskRepository.findByidUser("1")).thenReturn(Arrays.asList(task1, task2));
 
         List<Task> tasks = taskService.getAllTasks("1");
-        assertEquals(2, tasks.size());
         assertEquals("Tarea 1", tasks.get(0).getNombreTarea());
+        assertEquals(2, tasks.size());
     }
 
     @Test
@@ -225,6 +225,7 @@ public class TaskApplicationTest {
         assertFalse(result.isPresent());
     }
 
+    @Test
     public void testTaskGenerator() {
         taskService.taskGenerator();
         ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
@@ -233,4 +234,67 @@ public class TaskApplicationTest {
         List<Task> capturedTasks = taskCaptor.getAllValues();
         assertTrue(capturedTasks.size() >= 100 && capturedTasks.size() <= 1000);
     }
+
+    @Test
+    public void testConstructorAndGetters() {
+        // Verificar valores iniciales de constructor y getters
+        assertEquals("SantiagoDiazR", user.getUsername());
+        assertEquals("a4nt14g0", user.getPasswd());
+    }
+
+    @Test
+    public void testIdUserSetterAndGetter() {
+        // Definir y recuperar el ID del usuario
+        user.setIdUser("12345");
+        assertEquals("12345", user.getIdUser());
+    }
+
+    @Test
+    public void testSetAndGetIdToken() {
+        // Asignar un valor a idToken y verificar
+        token.setIdToken("token123");
+        assertEquals("token123", token.getIdToken());
+    }
+
+    @Test
+    public void testSetAndGetIdUser() {
+        // Asignar un valor a idUser y verificar
+        token.setIdUser("12345");
+        assertEquals("12345", token.getIdUser());
+    }
+
+    @Test
+    public void testIdTokenIsNeverNull() {
+        assertNotNull(token.getIdToken());
+    }
+
+    @Test
+    public void testIdUserIsNeverNull() {
+        assertNotNull(token.getIdUser());
+    }
+
+    @Test
+    public void shouldNotReturnTasksOfOtherUsers() {
+        when(taskRepository.findByidUser("1")).thenReturn(Collections.singletonList(task1));
+        List<Task> tasks = taskService.getAllTasks("1");
+        assertTrue(tasks.stream().allMatch(task -> task.getIdUser().equals("1")));
+    }
+
+    @Test
+    public void shouldAllowUserToUpdateOwnTask() {
+        when(taskRepository.findById("1")).thenReturn(Optional.of(task1));
+        when(taskRepository.save(task1)).thenReturn(task1);
+        task1.setNombreTarea("Tarea actualizada");
+        Task updatedTask = taskService.updateTask("1", task1);
+        assertEquals("Tarea actualizada", updatedTask.getNombreTarea());
+    }
+
+    @Test
+    public void shouldNotAllowUserToUpdateOthersTasks() {
+        when(taskRepository.findById("2")).thenReturn(Optional.of(task2));
+        Task updatedTask = taskService.updateTask("2", task2);
+        assertNull(updatedTask);
+    }
+
 }
+
