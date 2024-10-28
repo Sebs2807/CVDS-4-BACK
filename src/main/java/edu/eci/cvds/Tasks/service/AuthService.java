@@ -65,8 +65,7 @@ public class AuthService {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            // Lógica para agregar el rol
-            user.getRoles().add(role);
+            user.getRoles().add(role.strip());
             userRepository.save(user);
             return user;
         } else {
