@@ -9,6 +9,8 @@ import edu.eci.cvds.Tasks.repository.TokenRepository;
 import edu.eci.cvds.Tasks.repository.UserRepository;
 import edu.eci.cvds.Tasks.service.AuthService;
 import edu.eci.cvds.Tasks.service.TaskService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,9 +22,12 @@ import org.mockito.ArgumentCaptor;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class TaskApplicationTest {
@@ -33,6 +38,8 @@ public class TaskApplicationTest {
     private UserRepository userRepository;
     @Mock
     private TokenRepository tokenRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private TaskService taskService;
@@ -53,7 +60,7 @@ public class TaskApplicationTest {
         token = new Token();
         token.setIdToken("1");
         token.setIdUser("1");
-    
+
         task1 = new Task();
         task1.setIdTarea("1");
         task1.setNombreTarea("Tarea 1");
@@ -63,7 +70,7 @@ public class TaskApplicationTest {
         task1.setDificultadTarea(Difficulty.ALTO);
         task1.setTiempoTarea(2);
         task1.setIdUser("1");
-    
+
         task2 = new Task();
         task2.setIdTarea("2");
         task2.setNombreTarea("Tarea 2");
@@ -74,7 +81,6 @@ public class TaskApplicationTest {
         task2.setTiempoTarea(1);
         task2.setIdUser("1");
     }
-    
 
     @Test
     public void shouldGetAllTasks() {
@@ -123,19 +129,19 @@ public class TaskApplicationTest {
     }
 
     @Test
-    public void shouldReturnDescTask(){
+    public void shouldReturnDescTask() {
         String expected = "Descripción de la tarea 1";
         assertEquals(expected, task1.getDescTarea());
     }
 
     @Test
-    public void shouldReturnIDTarea(){
+    public void shouldReturnIDTarea() {
         String expected = "1";
         assertEquals(expected, task1.getIdTarea());
     }
 
     @Test
-    public void shouldReturnIfTaskIsFinished(){
+    public void shouldReturnIfTaskIsFinished() {
         assertEquals(false, task1.isFinalizada());
         assertEquals(true, task2.isFinalizada());
     }
@@ -229,8 +235,10 @@ public class TaskApplicationTest {
     public void testTaskGenerator() {
         taskService.taskGenerator();
         ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, atLeast(100)).save(taskCaptor.capture()); // Verificar que se llama save() al menos 100 veces
-        verify(taskRepository, atMost(1000)).save(taskCaptor.capture()); // Verificar que se llama save() como máximo 1000 veces
+        verify(taskRepository, atLeast(100)).save(taskCaptor.capture()); // Verificar que se llama save() al menos 100
+                                                                         // veces
+        verify(taskRepository, atMost(1000)).save(taskCaptor.capture()); // Verificar que se llama save() como máximo
+                                                                         // 1000 veces
         List<Task> capturedTasks = taskCaptor.getAllValues();
         assertTrue(capturedTasks.size() >= 100 && capturedTasks.size() <= 1000);
     }
@@ -251,7 +259,6 @@ public class TaskApplicationTest {
 
     @Test
     public void testSetAndGetIdToken() {
-        // Asignar un valor a idToken y verificar
         token.setIdToken("token123");
         assertEquals("token123", token.getIdToken());
     }
@@ -296,5 +303,87 @@ public class TaskApplicationTest {
         assertNull(updatedTask);
     }
 
-}
+    @Test
+    public void shouldLogInWithValidCredentials() {
+        when(userRepository.findByUserName(user.getUsername())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        when(tokenRepository.save(any(Token.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
+        Token token = authService.logIn(user);
+        assertNotNull(token);
+        assertEquals("1", token.getIdUser());
+    }
+
+    @Test
+    public void shouldNotLogInWithInvalidCredentials() {
+        when(userRepository.findByUserName(user.getUsername())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+
+        Token token = authService.logIn(user);
+        assertNull(token);
+    }
+
+    @Test
+    public void shouldCreateNewUser() {
+        when(userRepository.findByUserName(user.getUsername())).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User createdUser = authService.createUser(user);
+        assertNotNull(createdUser);
+        assertEquals("ROLE_USER", createdUser.getRoles().get(0));
+        verify(userRepository, times(1)).save(createdUser);
+    }
+
+    @Test
+    public void shouldNotCreateDuplicateUser() {
+        when(userRepository.findByUserName(user.getUsername())).thenReturn(Optional.of(user));
+
+        User createdUser = authService.createUser(user);
+        assertNull(createdUser);
+    }
+
+    @Test
+    public void shouldAssignRoleToUser() {
+        when(userRepository.findById("1")).thenReturn(Optional.of(user));
+
+        User updatedUser = authService.assignRoleToUser("1", "ROLE_ADMIN");
+        assertTrue(updatedUser.getRoles().contains("ROLE_ADMIN"));
+        verify(userRepository, times(1)).save(updatedUser);
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenUserNotFoundForRoleAssignment() {
+        when(userRepository.findById("2")).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> authService.assignRoleToUser("2", "ROLE_ADMIN"));
+    }
+
+    @Test
+    public void shouldGetUserRolesByUserName() {
+        when(userRepository.findByUserName(user.getUsername())).thenReturn(Optional.of(user));
+        user.setRoles(Arrays.asList("ROLE_USER", "ROLE_ADMIN"));
+
+        List<String> roles = authService.getUserRolesByUserName(user.getUsername());
+        assertEquals(2, roles.size());
+        assertTrue(roles.contains("ROLE_USER"));
+        assertTrue(roles.contains("ROLE_ADMIN"));
+    }
+
+    @Test
+    public void shouldReturnEmptyListWhenUserRolesNotFound() {
+        when(userRepository.findByUserName("NonExistentUser")).thenReturn(Optional.empty());
+
+        List<String> roles = authService.getUserRolesByUserName("NonExistentUser");
+        assertTrue(roles.isEmpty());
+    }
+
+    @Test
+    public void shouldLogOutUserSuccessfully() {
+        when(tokenRepository.findById("1")).thenReturn(Optional.of(token));
+        doNothing().when(tokenRepository).deleteById("1");
+
+        authService.logOut(token);
+        verify(tokenRepository, times(1)).deleteById("1");
+    }
+
+}
