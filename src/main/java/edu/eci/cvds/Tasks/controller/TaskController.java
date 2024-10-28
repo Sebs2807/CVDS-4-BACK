@@ -19,9 +19,9 @@ public class TaskController {
      *
      * @return Lista de objetos Task, que contiene todas las tareas.
      */
-    @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    @GetMapping("/GAT/{idUser}")
+    public List<Task> getAllTasks(@PathVariable String idUser) {
+        return taskService.getAllTasks(idUser);
     }
 
     /**
@@ -67,4 +67,6 @@ public class TaskController {
     public void deleteTask(@PathVariable String id) {
         taskService.deleteTask(id);
     }
+
+    
 }

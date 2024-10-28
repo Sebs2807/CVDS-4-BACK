@@ -2,7 +2,12 @@ package edu.eci.cvds.Tasks;
 
 import edu.eci.cvds.Tasks.model.Task;
 import edu.eci.cvds.Tasks.model.Difficulty;
+import edu.eci.cvds.Tasks.model.Token;
+import edu.eci.cvds.Tasks.model.User;
 import edu.eci.cvds.Tasks.repository.TaskRepository;
+import edu.eci.cvds.Tasks.repository.TokenRepository;
+import edu.eci.cvds.Tasks.repository.UserRepository;
+import edu.eci.cvds.Tasks.service.AuthService;
 import edu.eci.cvds.Tasks.service.TaskService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -24,16 +28,30 @@ public class TaskApplicationTest {
 
     @Mock
     private TaskRepository taskRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private TokenRepository tokenRepository;
 
     @InjectMocks
     private TaskService taskService;
+    @InjectMocks
+    private AuthService authService;
 
     private Task task1;
     private Task task2;
+    private User user;
+    private Token token;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        user = new User("SantiagoDiazR", "a4nt14g0");
+        user.setIdUser("1");
+
+        token = new Token();
+        token.setIdToken("1");
+        token.setIdUser("1");
     
         task1 = new Task();
         task1.setIdTarea("1");
@@ -42,7 +60,8 @@ public class TaskApplicationTest {
         task1.setDescTarea("Descripción de la tarea 1");
         task1.setPrioridadTarea(2);
         task1.setDificultadTarea(Difficulty.ALTO);
-        task1.setTiempoTarea(Duration.ofHours(2));
+        task1.setTiempoTarea(2);
+        task1.setIdUser("1");
     
         task2 = new Task();
         task2.setIdTarea("2");
@@ -51,17 +70,18 @@ public class TaskApplicationTest {
         task2.setDescTarea("Descripción de la tarea 2");
         task2.setPrioridadTarea(1);
         task2.setDificultadTarea(Difficulty.BAJO);
-        task2.setTiempoTarea(Duration.ofHours(1));
+        task2.setTiempoTarea(1);
+        task2.setIdUser("1");
     }
     
 
     @Test
     public void shouldGetAllTasks() {
-        when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2));
+        when(taskRepository.findByidUser("1")).thenReturn(Arrays.asList(task1, task2));
 
-        List<Task> tasks = taskService.getAllTasks();
-        assertEquals(2, tasks.size());
+        List<Task> tasks = taskService.getAllTasks("1");
         assertEquals("Tarea 1", tasks.get(0).getNombreTarea());
+        assertEquals(2, tasks.size());
     }
 
     @Test
@@ -133,7 +153,7 @@ public class TaskApplicationTest {
 
     @Test
     public void shouldSetAndReturnTiempoTarea() {
-        Duration expectedDuration = Duration.ofHours(5);
+        Integer expectedDuration = 5;
         task1.setTiempoTarea(expectedDuration);
         assertEquals(expectedDuration, task1.getTiempoTarea());
     }
