@@ -5,12 +5,16 @@ import edu.eci.cvds.Tasks.model.User;
 import edu.eci.cvds.Tasks.repository.TokenRepository;
 import edu.eci.cvds.Tasks.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -26,12 +30,13 @@ public class AuthService {
 
     public Token logIn(User user) {
         Optional<User> optionalUser = userRepository.findByUserName(user.getUsername());
-    
+
         if (optionalUser.isPresent()) {
             User userDB = optionalUser.get();
             if (passwordEncoder.matches(user.getPasswd(), userDB.getPasswd())) {
                 Token token = new Token();
                 token.setIdUser(userDB.getIdUser());
+                token.setRoles(userDB.getRoles());
                 return tokenRepository.save(token);
             } else {
                 return null;
@@ -40,7 +45,6 @@ public class AuthService {
             return null;
         }
     }
-    
 
     public User createUser(User user) {
         Optional<User> optionalUser = userRepository.findByUserName(user.getUsername());
@@ -57,17 +61,25 @@ public class AuthService {
         tokenRepository.deleteById(token.getIdToken());
     }
 
-    public User addRoleToUser(String userId, String role) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        List<String> roles = user.getRoles();
-        if (roles == null) {
-            roles = new ArrayList<>();
+    public User assignRoleToUser(String userId, String role) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            // Lógica para agregar el rol
+            user.getRoles().add(role);
+            userRepository.save(user);
+            return user;
+        } else {
+            throw new NoSuchElementException("User not found with id: " + userId);
         }
-        if (!roles.contains(role)) {
-            roles.add(role.trim());
-        }
-        user.setRoles(roles);
-        return userRepository.save(user);
     }
 
+    public List<String> getUserRolesByUserName(String userName) {
+        Optional<User> optionalUser = userRepository.findByUserName(userName);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return user.getRoles();
+        }
+        return Collections.emptyList();
+    }
 }
