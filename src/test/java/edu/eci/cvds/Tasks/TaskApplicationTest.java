@@ -238,7 +238,7 @@ public class TaskApplicationTest {
     @Test
     public void testConstructorAndGetters() {
         // Verificar valores iniciales de constructor y getters
-        assertEquals("SantiagoDiazR", user.getUserName());
+        assertEquals("SantiagoDiazR", user.getUsername());
         assertEquals("a4nt14g0", user.getPasswd());
     }
 

@@ -11,6 +11,16 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
 
+    /**
+     * Crea un número específico de tareas aleatorias.
+     *
+     * @param numTareas El número de tareas a generar.
+     */
+    @PostMapping("/generateRandom/{numTareas}")
+    public void generateRandomTasks(@PathVariable int numTareas) {
+        taskService.taskGenerator(numTareas);
+    }
+
     @Autowired
     private TaskService taskService;
 
@@ -25,10 +35,21 @@ public class TaskController {
     }
 
     /**
+     * Obtener todas las tareas.
+     *
+     * @return Lista de objetos Task, que contiene todas las tareas.
+     */
+    @GetMapping("/all")
+    public List<Task> getAllTasks() {
+        return taskService.getAllTasks();
+    }
+
+    /**
      * Obtener una tarea específica por su ID.
      *
      * @param id El identificador único de la tarea.
-     * @return Un objeto Task si se encuentra, o null si no existe la tarea con el ID especificado.
+     * @return Un objeto Task si se encuentra, o null si no existe la tarea con el
+     *         ID especificado.
      */
     @GetMapping("/{id}")
     public Task getTaskById(@PathVariable String id) {
@@ -38,7 +59,8 @@ public class TaskController {
     /**
      * Crear una nueva tarea.
      *
-     * @param task El objeto Task que se va a crear, enviado en el cuerpo de la solicitud.
+     * @param task El objeto Task que se va a crear, enviado en el cuerpo de la
+     *             solicitud.
      * @return El objeto Task creado.
      */
     @PostMapping
@@ -47,17 +69,9 @@ public class TaskController {
     }
 
     /**
-     * Crea entre 100 y 100 tareas aleatorias.
-     */
-    @PostMapping("/generateRandom")
-    public void generateRandomTasks() {
-        taskService.taskGenerator();
-    }
-
-    /**
      * Actualizar una tarea existente.
      *
-     * @param id El identificador único de la tarea a actualizar.
+     * @param id          El identificador único de la tarea a actualizar.
      * @param updatedTask El objeto Task actualizado con los nuevos valores.
      * @return El objeto Task actualizado.
      */
@@ -76,5 +90,4 @@ public class TaskController {
         taskService.deleteTask(id);
     }
 
-    
 }
