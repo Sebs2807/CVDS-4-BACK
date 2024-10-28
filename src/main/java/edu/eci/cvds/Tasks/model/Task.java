@@ -1,5 +1,6 @@
 package edu.eci.cvds.Tasks.model;
 
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,6 +13,34 @@ public class Task {
     private String nombreTarea;
     private boolean finalizada;
     private String descTarea;
+    private Integer prioridadTarea;
+    private Difficulty dificultadTarea;
+    private Integer tiempoTarea;
+    private String idUser;
+
+    public Integer getPrioridadTarea() {
+        return prioridadTarea;
+    }
+
+    public void setPrioridadTarea(Integer prioridadTarea) {
+        this.prioridadTarea = prioridadTarea;
+    }
+
+    public Difficulty getDificultadTarea() {
+        return dificultadTarea;
+    }
+
+    public void setDificultadTarea(Difficulty dificultadTarea) {
+        this.dificultadTarea = dificultadTarea;
+    }
+
+    public Integer getTiempoTarea() {
+        return tiempoTarea;
+    }
+
+    public void setTiempoTarea(Integer tiempoTarea) {
+        this.tiempoTarea = tiempoTarea;
+    }
 
     public String getIdTarea() {
         return idTarea;
@@ -44,4 +73,13 @@ public class Task {
     public void setDescTarea(String descTarea) {
         this.descTarea = descTarea;
     }
+
+    public String getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
+    }
 }
+
