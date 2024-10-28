@@ -46,7 +46,24 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,9 +107,19 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/TaskApplication.class</exclude>
-                                <exclude>**/TaskController.class</exclude>
-                                <exclude>**/TasksApplication.class</exclude>
                                 <exclude>**/WebConfig.class</exclude>
+                                <exclude>**/WebSecurityConfig.class</exclude>
+                                <exclude>**/TaskController.class</exclude>
+                                <exclude>**/AuthController.class</exclude>
+                                <exclude>**/Difficulty.class</exclude>
+                                <exclude>**/Task.class</exclude>
+                                <exclude>**/Token.class</exclude>
+                                <exclude>**/User.class</exclude>
+                                <exclude>**/TaskRepository.class</exclude>
+                                <exclude>**/TokenRepository.class</exclude>
+                                <exclude>**/UserRepository.class</exclude>
+                                <exclude>**/MongoUserDetailsService.class</exclude>
+                                <exclude>**/AuthService.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>

@@ -19,9 +19,9 @@ public class TaskController {
      *
      * @return Lista de objetos Task, que contiene todas las tareas.
      */
-    @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    @GetMapping("/GAT/{idUser}")
+    public List<Task> getAllTasks(@PathVariable String idUser) {
+        return taskService.getAllTasks(idUser);
     }
 
     /**
@@ -47,6 +47,14 @@ public class TaskController {
     }
 
     /**
+     * Crea entre 100 y 100 tareas aleatorias.
+     */
+    @PostMapping("/generateRandom")
+    public void generateRandomTasks() {
+        taskService.taskGenerator();
+    }
+
+    /**
      * Actualizar una tarea existente.
      *
      * @param id El identificador único de la tarea a actualizar.
@@ -67,4 +75,6 @@ public class TaskController {
     public void deleteTask(@PathVariable String id) {
         taskService.deleteTask(id);
     }
+
+    
 }
