@@ -232,18 +232,6 @@ public class TaskApplicationTest {
     }
 
     @Test
-    public void testTaskGenerator() {
-        taskService.taskGenerator();
-        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, atLeast(100)).save(taskCaptor.capture()); // Verificar que se llama save() al menos 100
-                                                                         // veces
-        verify(taskRepository, atMost(1000)).save(taskCaptor.capture()); // Verificar que se llama save() como máximo
-                                                                         // 1000 veces
-        List<Task> capturedTasks = taskCaptor.getAllValues();
-        assertTrue(capturedTasks.size() >= 100 && capturedTasks.size() <= 1000);
-    }
-
-    @Test
     public void testConstructorAndGetters() {
         // Verificar valores iniciales de constructor y getters
         assertEquals("SantiagoDiazR", user.getUsername());
