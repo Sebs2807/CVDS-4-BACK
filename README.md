@@ -82,65 +82,38 @@ Implementación de una clase para permitir realizar solicitudes HTTP desde un pu
   ![DELETE eliminar tarea](images/img_10.png)
 
 ## 10. Herramienta de gráficas
-
-Para los histogramas pedidos usamos la herramienta de chart.js, que permite la creación de gráficos interactivos.
+Para los histogramas pedidos usamos la herramienta de chart.js, que permite la creación de gráficos interactivos. 
 
 Esta herramienta es bastante intuitiva y facil de usar, también tiene gráficos atractivos para el usuario además de permitirles interactuar mediante herramientas como el "hover" usado en css y son adaptables a las diferentes pantallas
 
 Las partes malas de usar chart.js es que tiene personalizacion limitada y no es tan fácil de escalar para datos muy complejos y gráficos 3d, por lo tanto para graficación simple es una buena herramienta por su facilidad de uso
 
-# Laboratorio 5
+## 11. Configuracion de seguridad
+Primero hicimos la configuracion para encriptar las contraseñas de los usuarios en la base de datos, esto mediante la modificación del método para crear los usuarios, donde usando PasswordEncoder del propio Spring seteamos la contraseña mediante .encode() así:
+![alt text](images/image-4.png)
 
-## Jobs
+Ahora las contraseñas se ven en la base de datos de la siguiente forma:
+![alt text](images/image-5.png)
 
-En primer lugar integramos una accion en github para que cuando se hace un push en el repositorio, se ejecute una tarea que se encarga de hacer un build y desplegar el proyecto en azure.
+Por esto mismo se tuvo que hacer una modificación en el proceso del login para que el usuario no tuviera que insertar su contraseña encriptada para poder acceder, esto se hace mediante un método de PasswordEncoder llamado .matches() como se ve a continuación:
+![alt text](images/image-6.png)
 
-![alt text](images/image-12.png)
+Continuando con la configuración de seguridad, vemos la configuración web, la cual permitimos que se pudiera hacer cualquier tipo de petición, ya que el que se encarga de las revision de los roles será el front, por lo tanto de lo único que se encarga este método es de el codificador y de dar autoridades a los usuarios
+![alt text](images/image-7.png)
 
-## Integración continua
+Se modifica la clase User para que ahora tenga una lista de roles:
+![alt text](images/image-8.png)
 
-En segundo lugar hacemos toda la configuracion necesaria para configurar el azure, seguimos el tutorial de azure para configurar la integración continua.
+Se modificó a su vez el token para que contenga los roles en una lista, ya que el token es el que se usa en el front para garantizar el inicio de sesión
+![alt text](images/image-9.png)
 
-![alt text](images/image-13.png)
+Adicionalmente se crearon 2 servicios nuevos, uno para poder añadir roles a un usuario en específico y otro para obtener los roles del usuario en específico
+![alt text](images/image-10.png)
 
-Primero lo creamos para que sea compatible con el proyecto de maven, luego configuramos el pipeline para que se ejecute cuando se hace un push en el repositorio, y finalmente configuramos el azure para que se ejecute el build y desplegar el proyecto.
+Finalizando con la seguridad, miramos como se hizo el certificado autofirmado
 
-![alt text](images/image-14.png)
+Primero usamos el comando: keytool -genkeypair -alias miproyecto -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore miproyecto.p12 -validity 3650, el cual nos genera un archivo con extensión .p12 y el alias que le hayamos querido poner, validez de 3650 días y de peso de 2048 bits, el tipo de almacenamiento de claves que elgimos, es decir PKCS12. Este documento que es ya el certificado autofirmado lo guardamos en la ruta C:\Users\sebas\Desktop\CVDS LABS\CVDS-4-BACK\src\main\resources para que tenga efecto y adicionalmente añadimos algunas cosas en application.properties del proyecto, estas cosas que añadimos fueron:
+![alt text](images/image-11.png)
+Donde se debe poner información que nos piden a la hora de hacer el certificado
 
-Una vez que se ha configurado la integración continua, se puede ver que se ejecuta cada vez que se hace un push en el repositorio.
-
-![alt text](images/image-15.png)
-
-## Nuevas funcionalidades
-
-Para crear las nuevas dificultades para las tasks, se modifico el modelo y los demas archivos para que se puedan crear tareas con diferentes dificultades.
-
-![alt text](images/image-16.png)
-
-En el servicio de tasks, se modifico el codigo para que se puedan crear tareas con diferentes dificultades automaticamente.
-
-![alt text](images/image-17.png)
-
-# Laboratorio 6
-
-## Autenticación
-
-Para implementar la autenticacion de usuarios, se crearon los servicios de autenticacion y de usuarios, y se modifico el codigo de la aplicacion para que se puedan crear usuarios y autenticar con ellos.
-
-Se creo un AuthController que se encarga de manejar las peticiones de autenticacion, basicamente se recibe un usuario y contraseña y se valida si son correctos, si son correctos se crea un token y se devuelve, si no se devuelve null.
-
-Con este token se puede acceder a las funcionalidades de la aplicacion, como crear tareas, cambiar estados, etc. Pero todos acorde con el token para poder acceder a las funcionalidades.
-
-![alt text](images/image-18.png)
-
-Con ello se crearon dos nuevos elementos en mongo, ya que ahora existen sesiones de usuarios y los mismos usuarios, se pueden crear sesiones de usuarios y se pueden eliminar sesiones de usuarios. Para manejar estilo login y logout, se modifico el codigo de la aplicacion para que se puedan crear y eliminar sesiones de usuarios.
-
-Ademas ahora cada task tiene un idUser, esto es para que cada task tenga un usuario asociado, y se puedan cambiar las tareas de un usuario en particular.
-
-![alt text](images/image-19.png)
-
-Todo junto con pruebas unitarias, se puede ver que se pueden crear y eliminar sesiones de usuarios.
-
-# Laboratorio 8
-
-## Seguridad
+Finalmente ejecutamos el comando mvn spring-boot:run para ejecutar de nuevo el proyecto pero esta vez en el puerto 8443, que fue elegido por nosotros, y estará corriendo en la URL https://localhost:8443, así que el front deberá hacer solicitudes a esta misma.
