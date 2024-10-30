@@ -13,12 +13,12 @@ import edu.eci.cvds.Tasks.service.MongoUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class WebSecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()  // Deshabilita CSRF para pruebas
+                .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
                         .anyRequest().permitAll());
         return http.build();

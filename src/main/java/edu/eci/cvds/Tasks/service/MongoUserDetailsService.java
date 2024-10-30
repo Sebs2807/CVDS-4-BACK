@@ -23,31 +23,36 @@ public class MongoUserDetailsService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    
+    /**
+     * Carga un usuario mediante su nombre de usuario
+     * Este metodo trae un usuario del repositorio mediante el nombre de usuario dado
+     * @param username nombre del usuario a cargar
+     * @return Un onjeto UserDetails que contiene la información del usuario junto con sus autoridades
+     * @throws UsernameNotFoundException si el usuario no se encuentra
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Lógica para cargar usuario de MongoDB
         User user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        List<String> cleanedRoles = new ArrayList<>();
-        for (String role : user.getRoles()) {
-            cleanedRoles.add(role.trim());
-        }
-
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String role : cleanedRoles) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+        for (String role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.trim()));
         }
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                user.getAuthorities());
+                authorities); 
     }
 
+    /**
+     * Guarda un nuevo usuario en el repositorio, codifica la contraseña del usuario antes de guardarlo en el repositorio
+     * @param user El objeto usuario que contiene la información del usuario que se guardó en el repositorio
+     */
     public void saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPasswd()));
+        user.setPassword(passwordEncoder.encode(user.getPassword())); 
         userRepository.save(user);
     }
 }
