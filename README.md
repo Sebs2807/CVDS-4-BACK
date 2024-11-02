@@ -9,7 +9,7 @@
 - Sebastián Velásquez
 - Santiago Naranjo
 
-![Integrantes](%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22%2B%20getUserRoles%20(userName%26amp%3Bnbsp%3B%20%3A%20String)%20%3A%20List%26amp%3Blt%3BString%26amp%3Bgt%3B%22%20style%3D%22text%3BstrokeColor%3Dnone%3BfillColor%3Dnone%3Balign%3Dleft%3BverticalAlign%3Dtop%3BspacingLeft%3D4%3BspacingRight%3D4%3Boverflow%3Dhidden%3Brotatable%3D0%3Bpoints%3D%5B%5B0%2C0.5%5D%2C%5B1%2C0.5%5D%5D%3BportConstraint%3Deastwest%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%222170%22%20y%3D%22370%22%20width%3D%22410%22%20height%3D%2224%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3E)
+![Integrantes](images/Diagrama%20de%20clases%20CVDS.drawio.png)
 
 ## 1. Generación del scaffolding del proyecto.
 
