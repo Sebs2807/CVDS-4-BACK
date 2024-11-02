@@ -9,6 +9,9 @@ import edu.eci.cvds.Tasks.repository.TokenRepository;
 import edu.eci.cvds.Tasks.repository.UserRepository;
 import edu.eci.cvds.Tasks.service.AuthService;
 import edu.eci.cvds.Tasks.service.TaskService;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -20,10 +23,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import edu.eci.cvds.Tasks.controller.AuthController;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,6 +50,8 @@ public class TaskApplicationTest {
     private TaskService taskService;
     @InjectMocks
     private AuthService authService;
+    @InjectMocks
+    private AuthController authController;
 
     private Task task1;
     private Task task2;
@@ -60,6 +67,7 @@ public class TaskApplicationTest {
         token = new Token();
         token.setIdToken("1");
         token.setIdUser("1");
+        token.setRoles(Arrays.asList("ROLE_USER", "ROLE_ADMIN"));
 
         task1 = new Task();
         task1.setIdTarea("1");
@@ -374,4 +382,123 @@ public class TaskApplicationTest {
         verify(tokenRepository, times(1)).deleteById("1");
     }
 
+    // @Test
+    // public void testAuthentication() {
+    // when(authService.logIn(any(User.class))).thenReturn(token);
+
+    // Token result = authController.authentication("SantiagoDiazR", "a4nt14g0");
+    // assertNotNull(result);
+    // assertEquals("1", result.getIdToken());
+    // assertEquals("1", result.getIdUser());
+    // }
+
+    // @Test
+    // public void testCreateUser() {
+    // when(authService.createUser(any(User.class))).thenReturn(user);
+
+    // User result = authController.createUser(user);
+    // assertNotNull(result);
+    // assertEquals("SantiagoDiazR", result.getUsername());
+    // assertEquals("1", result.getIdUser());
+    // }
+
+    // @Test
+    // public void testDeleteSession() {
+    // doNothing().when(authService).logOut(any(Token.class));
+
+    // authController.deleteSession(token);
+    // verify(authService, times(1)).logOut(token);
+    // }
+
+    // @Test
+    // public void testAssignRoleToUser() {
+    // when(authService.assignRoleToUser(anyString(),
+    // anyString())).thenReturn(user);
+
+    // User result = authController.assignRoleToUser("1", "ROLE_ADMIN");
+    // assertNotNull(result);
+    // assertEquals("SantiagoDiazR", result.getUsername());
+    // assertTrue(result.getRoles().contains("ROLE_ADMIN"));
+    // }
+
+    // @Test
+    // public void testGetUserRoles() {
+    // List<String> roles = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
+    // when(authService.getUserRolesByUserName("SantiagoDiazR")).thenReturn(roles);
+
+    // List<String> result = authController.getUserRoles("SantiagoDiazR");
+    // assertNotNull(result);
+    // assertEquals(2, result.size());
+    // assertTrue(result.contains("ROLE_USER"));
+    // assertTrue(result.contains("ROLE_ADMIN"));
+    // }
+
+    // @Test
+    // public void testTestEndpoint() {
+    // String result = authController.testEndpoint();
+    // assertEquals("El endpoint está funcionando.", result);
+    // }
+
+    @Test
+    public void shouldGenerateTasks() {
+        taskService.taskGenerator(5);
+        verify(taskRepository, times(5)).save(any(Task.class));
+    }
+
+    @Test
+    public void shouldGetAllTasksForUser() {
+        when(taskRepository.findByidUser("1")).thenReturn(Arrays.asList(task1, task2));
+        List<Task> tasks = taskService.getAllTasks("1");
+        assertEquals(2, tasks.size());
+        assertEquals("Tarea 1", tasks.get(0).getNombreTarea());
+    }
+
+    @Test
+    public void testGetAuthorities() {
+        // Set roles for the user
+        user.setRoles(Arrays.asList("ROLE_USER", "ROLE_ADMIN"));
+
+        // Get authorities from the user
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+
+        // Verify the authorities are not null and contain the expected roles
+        assertNotNull(authorities);
+        assertEquals(2, authorities.size());
+        assertTrue(authorities.contains(new SimpleGrantedAuthority("ROLE_USER")));
+        assertTrue(authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN")));
+    }
+
+    @Test
+    public void testGetPassword() {
+        assertEquals("a4nt14g0", user.getPassword());
+    }
+
+    @Test
+    public void testIsAccountNonExpired() {
+        assertTrue(user.isAccountNonExpired());
+    }
+
+    @Test
+    public void testIsAccountNonLocked() {
+        assertTrue(user.isAccountNonLocked());
+    }
+
+    @Test
+    public void testIsCredentialsNonExpired() {
+        assertTrue(user.isCredentialsNonExpired());
+    }
+
+    @Test
+    public void testIsEnabled() {
+        assertTrue(user.isEnabled());
+    }
+
+    @Test
+    public void testGetRoles() {
+        List<String> roles = token.getRoles();
+        assertNotNull(roles);
+        assertEquals(2, roles.size());
+        assertTrue(roles.contains("ROLE_USER"));
+        assertTrue(roles.contains("ROLE_ADMIN"));
+    }
 }

@@ -106,15 +106,12 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <exclude>**/TaskApplication.class</exclude>
+                                <exclude>**/TaskApplication</exclude>
                                 <exclude>**/WebConfig.class</exclude>
                                 <exclude>**/WebSecurityConfig.class</exclude>
                                 <exclude>**/TaskController.class</exclude>
                                 <exclude>**/AuthController.class</exclude>
                                 <exclude>**/Difficulty.class</exclude>
-                                <exclude>**/Task.class</exclude>
-                                <exclude>**/Token.class</exclude>
-                                <exclude>**/User.class</exclude>
                                 <exclude>**/TaskRepository.class</exclude>
                                 <exclude>**/TokenRepository.class</exclude>
                                 <exclude>**/UserRepository.class</exclude>
@@ -136,7 +133,7 @@
                                         <limit>
                                             <counter>CLASS</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0</minimum>
+                                            <minimum>0.80</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

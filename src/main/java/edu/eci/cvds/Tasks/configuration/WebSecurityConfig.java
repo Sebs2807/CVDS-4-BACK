@@ -11,10 +11,20 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import edu.eci.cvds.Tasks.service.MongoUserDetailsService;
 
+/**
+ * Configuración de seguridad web para la aplicación.
+ */
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig{
+public class WebSecurityConfig {
 
+    /**
+     * Configura la cadena de filtros de seguridad.
+     *
+     * @param http el objeto {@link HttpSecurity} para configurar la seguridad HTTP.
+     * @return la cadena de filtros de seguridad configurada.
+     * @throws Exception si ocurre un error durante la configuración.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -24,11 +34,22 @@ public class WebSecurityConfig{
         return http.build();
     }
 
+    /**
+     * Proporciona una implementación de {@link UserDetailsService} para cargar
+     * detalles del usuario.
+     *
+     * @return una instancia de {@link MongoUserDetailsService}.
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         return new MongoUserDetailsService();
     }
 
+    /**
+     * Proporciona un codificador de contraseñas.
+     *
+     * @return una instancia de {@link BCryptPasswordEncoder}.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
